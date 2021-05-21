@@ -1,0 +1,47 @@
+---
+title: "Gendered Child-Directed Speech in Experimental Settings"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(ghibli)
+```
+
+
+
+```{r}
+family_data <- read.csv('family_data.csv', fileEncoding = "UTF-8-BOM") %>%
+  mutate(father_prop = single_father/total_singles) %>%
+  mutate(ss_prop = ss_married_children/(ss_married_children + os_married_children))
+```
+
+```{r}
+ggplot(family_data, aes(x=year, y=father_prop, color=country)) + 
+  geom_line(size=1) + 
+  theme_minimal() + 
+  labs(x = "Year", y="% of Single-Parent Families Consisting of a Father", color="Country") + 
+  scale_color_ghibli_d('KikiMedium', direction = -1)
+```
+
+```{r}
+ggsave('single_father_prop.jpg', width = 10, height = 6)
+```
+
+```{r}
+ggplot(family_data, aes(x=year, y=father_prop, color=country)) + 
+  geom_smooth() + 
+  theme_minimal() + 
+  labs(x = "Year", y="% of Single-Parent Families Consisting of a Father", color="Country") + 
+  scale_color_ghibli_d('KikiMedium', direction = -1)
+```
+
+```{r}
+family_data %>%
+  filter(!is.na(ss_prop)) %>%
+ggplot(aes(x=year, y=ss_prop, color=country)) + 
+  geom_point() + 
+  geom_line() +
+  theme_minimal() + 
+  labs(x = "Year", y="% of Married Couples with Children Consisting of Same-Sex Partners", color="Country")
+```
